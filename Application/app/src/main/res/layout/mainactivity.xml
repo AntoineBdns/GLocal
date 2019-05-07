@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@drawable/background_portrait">
+    android:background="@drawable/geolocalisation2">
 
     <TextView
         android:layout_width="match_parent"
@@ -28,42 +28,12 @@
         android:padding="10dp">
 
         <Button
-            android:id="@+id/btnCommencerPartie"
+            android:id="@+id/btnStart"
             android:layout_width="235dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:padding="10dp"
-            android:text="Jouer !"
-            android:background="@color/rouge"
-            android:textColor="#FFFFFF" />
-
-        <Button
-            android:id="@+id/btnConsulterStatistiques"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:padding="10dp"
-            android:text="Consulter statistiques"
-            android:background="@color/rouge"
-            android:textColor="#FFFFFF" />
-
-        <Button
-            android:id="@+id/btnOptions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:padding="10dp"
-            android:text="Options"
-            android:background="@color/rouge"
-            android:textColor="#FFFFFF" />
-
-        <Button
-            android:id="@+id/btnConsulterRegles"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:padding="10dp"
-            android:text="Consulter règles"
+            android:text="@string/btnStart"
             android:background="@color/rouge"
             android:textColor="#FFFFFF" />
     </LinearLayout>

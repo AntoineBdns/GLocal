@@ -5,6 +5,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="blanc">#FFF</color>
     <color name="gris">#999</color>
-    <color name="rouge">#FF0621</color>
-
+    <color name="rouge">#c41909</color>
+    <color name="vert">#2d9e14</color>
 </resources>

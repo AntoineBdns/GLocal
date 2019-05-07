@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TP SYS EMBA</string>
+    <string name="btnStart">START</string>
 </resources>
