@@ -35,7 +35,9 @@ public class MainActivity extends Activity {
 
         for (String name : names)
             providers.add(lm.getProvider(name));
-    
+
+        Log.d("TEST"," "+
+                providers.size());
 
         Criteria critere = new Criteria();
 
