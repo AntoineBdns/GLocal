@@ -39,7 +39,9 @@ public class MapsActivity2 extends FragmentActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+        setContentView(R.layout.activity_maps2);
+
+        LatLng mDefaultLocation = new LatLng(-34, 151);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -85,12 +87,6 @@ public class MapsActivity2 extends FragmentActivity implements OnMapReadyCallbac
             }
         }
         updateLocationUI();
-    }
-
-    private void addPointToViewPort(LatLng newPoint) {
-        mBounds.include(newPoint);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(mBounds.build(),
-                findViewById(R.id.checkout_button).getHeight()));
     }
 
     private void getLocationPermission() {
