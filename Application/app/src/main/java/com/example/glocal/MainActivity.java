@@ -8,6 +8,9 @@ import android.widget.Button;
 
 
 public class MainActivity extends Activity {
+    private static final String TAG = "MainActivity";
+
+    private SectionsPageAdapter mSectionsPageAdapter;
 
 
     @Override
@@ -30,6 +33,16 @@ public class MainActivity extends Activity {
                 MainActivity.this.startActivity(intent);
             }
         });
+
+        Button go = (Button) this.findViewById(R.id.btnGo);
+        go.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, TabActivity.class);
+                MainActivity.this.startActivity(intent);
+            }
+        });
     }
+
+
 
 }

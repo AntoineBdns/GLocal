@@ -2,5 +2,6 @@
     <string name="app_name">TP SYS EMBA</string>
     <string name="btnMap1">MAP V1</string>
     <string name="btnMap2">MAP V2</string>
+    <string name="btnGo">GO !</string>
     <string name="check_out">Check Out</string>
 </resources>
