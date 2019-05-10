@@ -48,13 +48,13 @@ public class PlaceAdapter extends BaseAdapter {
 
     @Override
     public View getView(int arg0, View convertView, ViewGroup parent) {
-        RelativeLayout layoutItem;
+        LinearLayout layoutItem;
 
         if (convertView == null) {
-            layoutItem = (RelativeLayout) inflater.inflate(
+            layoutItem = (LinearLayout) inflater.inflate(
                     R.layout.place_row, parent, false);
         } else {
-            layoutItem = (RelativeLayout) convertView;
+            layoutItem = (LinearLayout) convertView;
         }
 
         TextView adresseView = (TextView) layoutItem.findViewById(R.id.textViewAdresse);
