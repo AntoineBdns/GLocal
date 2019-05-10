@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
@@ -62,10 +63,21 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         // Ask permission to use location service
         getLocationPermission();
 
+        setLocation();
+
+        PlaceList list = new PlaceList();
+        list.getPlaces(50.9580472,2.3203764);
+        Log.d("Number of places",list.size()+"");
+        for (com.example.glocal.Place p: list ) {
+            mMap.addMarker(new MarkerOptions().position(p.loca).title(p.nom));
+        }
+
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+//        LatLng sydney = new LatLng(-34, 151);
+//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+
 
     }
 
@@ -128,6 +140,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
                 // we only want to grab the location once, to allow the user to pan and zoom freely.
                 mMap.setOnMyLocationChangeListener(null);
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(ll));
             }
         });
     }

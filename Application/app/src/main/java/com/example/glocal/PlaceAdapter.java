@@ -62,7 +62,8 @@ public class PlaceAdapter extends BaseAdapter {
         TextView telephoneView = (TextView) layoutItem.findViewById(R.id.textViewTelephone);
         telephoneView.setText(this.placesList.get(arg0).telephone);
         TextView coordonneesView = (TextView) layoutItem.findViewById(R.id.textViewCoordonnees);
-        coordonneesView.setText(this.placesList.get(arg0).coordonnees);
+        String coordonnees =this.placesList.get(arg0).loca.latitude+","+this.placesList.get(arg0).loca.longitude;
+        coordonneesView.setText(coordonnees);
 
         return layoutItem;
     }

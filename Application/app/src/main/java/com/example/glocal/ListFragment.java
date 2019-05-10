@@ -38,10 +38,9 @@ public class ListFragment extends Fragment {
         listView.setAdapter(adapter);
 
         // Construction des données de test
-        ArrayList<Place> tmp = new ArrayList<>();
-        tmp.add(new Place("Bavay", "0606060606", "4"));
-        tmp.add(new Place("VA", "0707070707", "42"));
-        tmp.add(new Place("DK", "0303030303", "69"));
+        PlaceList tmp = new PlaceList();
+        tmp.getPlaces(10.0,20.0);
+
         adapter.setList(tmp);
 
         AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
