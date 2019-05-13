@@ -2,17 +2,23 @@ package com.example.glocal;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -26,9 +32,20 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
-public class MapFragment extends SupportMapFragment implements OnMapReadyCallback {
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+import cz.msebera.android.httpclient.Header;
+
+public class MapFragment extends SupportMapFragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     private boolean needsInit=false;
 
     private GoogleMap mMap;
@@ -54,6 +71,8 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 .addApi(Places.GEO_DATA_API)
                 .build();
         mGoogleApiClient.connect();
+
+
     }
 
     @Override
@@ -65,12 +84,14 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         setLocation();
 
-        PlaceList list = new PlaceList();
+        mMap.setOnMarkerClickListener(this);
+
+        /*PlaceList list = new PlaceList();
         list.getPlaces(50.9580472,2.3203764);
         Log.d("Number of places",list.size()+"");
         for (com.example.glocal.Place p: list ) {
             mMap.addMarker(new MarkerOptions().position(p.loca).title(p.nom));
-        }
+        }*/
 
         // Add a marker in Sydney and move the camera
 //        LatLng sydney = new LatLng(-34, 151);
@@ -80,6 +101,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
 
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -141,10 +163,92 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 // we only want to grab the location once, to allow the user to pan and zoom freely.
                 mMap.setOnMyLocationChangeListener(null);
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(ll));
+                getPlaces(location.getLatitude(),location.getLongitude());
             }
         });
     }
+     public void getPlaces(double lat,double lon){
+         RequestParams params = new RequestParams();
+         params.put("app_id","J1QEb7Ad09VFODkddGYj");
+         params.put("app_code","n6LWISWbT3Daq45oIxpEmw");
+         params.put("in",lat+","+lon+";r=20000");
 
+         PlacesRestClient.get("places/v1/discover/explore", params, new JsonHttpResponseHandler() {
+             @Override
+             public void onSuccess(int statusCode, Header[] headers, JSONObject data) {
+                 try {
+                     JSONArray array = data.getJSONObject("results").getJSONArray("items");
+                     for (int i = 0; i < array.length(); i++) {
+                         JSONObject elt = array.getJSONObject(i);
+                         String nom = elt.getString("title");
+                         String adresse = elt.getString("vicinity").replaceAll("<br/>"," ");
+                         String category = elt.getJSONObject("category").getString("title");
+                         String localisation = elt.getString("position").replaceAll("\\[|\\]", "");
+                         double latitude = Double.parseDouble(localisation.split(",")[0]);
+                         double longitude = Double.parseDouble(localisation.split(",")[1]);
+                         Marker tmp = mMap.addMarker(
+                                 new MarkerOptions()
+                                    .position(new LatLng(latitude, longitude))
+                                    .title(nom)
+                                    .snippet(category+"\n"+adresse)
+                         );
+                         tmp.setTag(category);
+
+                     }
+                     mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+                         @Override
+                         public View getInfoWindow(Marker arg0) {
+                             return null;
+                         }
+
+                         @Override
+                         public View getInfoContents(Marker marker) {
+                             Context mContext = getContext();
+                             LinearLayout info = new LinearLayout(mContext);
+                             info.setOrientation(LinearLayout.VERTICAL);
+
+                             TextView title = new TextView(mContext);
+                             title.setTextColor(Color.BLACK);
+                             title.setGravity(Gravity.CENTER);
+                             title.setTypeface(null, Typeface.BOLD);
+                             title.setText(marker.getTitle());
+
+                             TextView snippet = new TextView(mContext);
+                             snippet.setTextColor(Color.GRAY);
+                             snippet.setText(marker.getSnippet());
+
+                             info.addView(title);
+                             info.addView(snippet);
+
+                             return info;
+                         }
+                     });
+
+
+
+                 } catch (JSONException e) {
+                     e.printStackTrace();
+                 }
+             }
+             @Override
+             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                 Log.d("Failure",errorResponse.toString()+" \n"+throwable.getMessage());
+             }
+         });
+     }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        // Retrieve the data from the marker.
+        String category = (String) marker.getTag();
+
+
+        Toast toast = Toast.makeText(getContext(), category, Toast.LENGTH_SHORT);
+        toast.show();
+
+        return false;
+    }
 
     /*
     @Override
