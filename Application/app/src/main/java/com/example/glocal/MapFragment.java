@@ -30,6 +30,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -186,11 +188,32 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                          String localisation = elt.getString("position").replaceAll("\\[|\\]", "");
                          double latitude = Double.parseDouble(localisation.split(",")[0]);
                          double longitude = Double.parseDouble(localisation.split(",")[1]);
+                         BitmapDescriptor iconMarker;
+                         switch (category){
+                             case "Restaurant":
+                             case "Snacks/Fast food":
+                             case "Food & Drink":
+                                 iconMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
+                                 break;
+                             case "Hotel":
+                             case "Hôtel":
+                                 iconMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE);
+                                 break;
+                             case "Bar/Pub":
+                             case "Cofee/Tea":
+                                 iconMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+                                 break;
+
+                             default:
+                                 iconMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+                                 break;
+                         }
                          Marker tmp = mMap.addMarker(
                                  new MarkerOptions()
                                     .position(new LatLng(latitude, longitude))
                                     .title(nom)
                                     .snippet(category+"\n"+adresse)
+                                    .icon(iconMarker)
                          );
 
 
