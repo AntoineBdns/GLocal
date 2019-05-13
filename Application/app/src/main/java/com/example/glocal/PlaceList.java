@@ -42,16 +42,17 @@ public class PlaceList extends ArrayList<Place>{
         try {
             JSONArray array = jOBJ.getJSONArray("items");
             for(int i = 0 ;i < array.length(); i++){
-               JSONObject elt = array.getJSONObject(i);
-               String nom = elt.getString("title");
-               String adresse = elt.getString("vicinity")  ;
-               String category = elt.getJSONObject("category").getString("title");
-               String localisation = elt.getString("position").replaceAll("\\[|\\]", "");
-               double latitude = Double.parseDouble(localisation.split(",")[0]);
-               double longitude = Double.parseDouble(localisation.split(",")[1]);
-               this.add(
-                       new Place(nom,adresse,category,new LatLng(latitude,longitude))
-               );
+                JSONObject elt = array.getJSONObject(i);
+                String nom = elt.getString("title");
+                String adresse = elt.getString("vicinity")  ;
+                String category = elt.getJSONObject("category").getString("title");
+                String localisation = elt.getString("position").replaceAll("\\[|\\]", "");
+                double latitude = Double.parseDouble(localisation.split(",")[0]);
+                double longitude = Double.parseDouble(localisation.split(",")[1]);
+                /*
+                this.add(
+                        new Place(nom,adresse,category,new LatLng(latitude,longitude))
+                );*/
             }
         }catch (Exception e){
             throw new Exception(e.getMessage());

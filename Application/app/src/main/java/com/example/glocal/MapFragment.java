@@ -85,22 +85,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         getLocationPermission();
 
         setLocation();
-
-
-        /*PlaceList list = new PlaceList();
-        list.getPlaces(50.9580472,2.3203764);
-        Log.d("Number of places",list.size()+"");
-        for (com.example.glocal.Place p: list ) {
-            mMap.addMarker(new MarkerOptions().position(p.loca).title(p.nom));
-        }*/
-
-        // Add a marker in Sydney and move the camera
-//        LatLng sydney = new LatLng(-34, 151);
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
-
-
     }
 
 
@@ -168,7 +152,9 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
             }
         });
     }
-     public void getPlaces(double lat,double lon){
+
+
+    public void getPlaces(double lat,double lon){
          RequestParams params = new RequestParams();
          params.put("app_id","J1QEb7Ad09VFODkddGYj");
          params.put("app_code","n6LWISWbT3Daq45oIxpEmw");
@@ -260,40 +246,4 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
              }
          });
      }
-
-
-
-    /*
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        if (needsInit) {
-            CameraUpdate center=
-                    CameraUpdateFactory.newLatLng(new LatLng(40.76793169992044,
-                            -73.98180484771729));
-            CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
-
-            mMap.moveCamera(center);
-            mMap.animateCamera(zoom);
-        }
-
-        addMarker(mMap, 40.748963847316034, -73.96807193756104, 4,
-               4);
-        addMarker(mMap, 40.76866299974387, -73.98268461227417,
-                1,1);
-        addMarker(mMap, 40.765136435316755, -73.97989511489868,
-                2,2);
-        addMarker(mMap, 40.70686417491799, -74.01572942733765,
-                3,3);
-    }
-
-    private void addMarker(GoogleMap map, double lat, double lon,
-                           int title, int snippet) {
-        map.addMarker(new MarkerOptions().position(new LatLng(lat, lon))
-                .title("Test")
-                .snippet("TestSnippet"));
-    }
-    */
-
 }

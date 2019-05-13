@@ -28,24 +28,6 @@
         android:padding="10dp">
 
         <Button
-            android:id="@+id/btnMap1"
-            android:layout_width="235dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:padding="10dp"
-            android:text="@string/btnMap1"
-            android:background="@color/rouge"
-            android:textColor="#FFFFFF" />
-        <Button
-            android:id="@+id/btnMap2"
-            android:layout_width="235dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:padding="10dp"
-            android:text="@string/btnMap2"
-            android:background="@color/rouge"
-            android:textColor="#FFFFFF" />
-        <Button
             android:id="@+id/btnGo"
             android:layout_width="235dp"
             android:layout_height="wrap_content"

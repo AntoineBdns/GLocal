@@ -57,13 +57,10 @@ public class PlaceAdapter extends BaseAdapter {
             layoutItem = (LinearLayout) convertView;
         }
 
+        TextView nomView = (TextView) layoutItem.findViewById(R.id.textViewNom);
+        nomView.setText(this.placesList.get(arg0).nom);
         TextView adresseView = (TextView) layoutItem.findViewById(R.id.textViewAdresse);
         adresseView.setText(this.placesList.get(arg0).adresse);
-        TextView telephoneView = (TextView) layoutItem.findViewById(R.id.textViewTelephone);
-        telephoneView.setText(this.placesList.get(arg0).telephone);
-        TextView coordonneesView = (TextView) layoutItem.findViewById(R.id.textViewCoordonnees);
-        String coordonnees =this.placesList.get(arg0).loca.latitude+","+this.placesList.get(arg0).loca.longitude;
-        coordonneesView.setText(coordonnees);
 
         return layoutItem;
     }

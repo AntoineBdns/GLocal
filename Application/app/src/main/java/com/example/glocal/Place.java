@@ -1,19 +1,18 @@
 package com.example.glocal;
 
-
-import com.google.android.gms.maps.model.LatLng;
-
 public class Place {
     String nom;
     String adresse;
-    String telephone;
-    LatLng loca;
+    String categorie;
+    String latitude;
+    String longitude;
 
-    public Place (String _nom,String _adresse, String _telephone,LatLng _loca) {
+    public Place (String _nom,String _adresse, String _categorie, String _latitude, String _longitude) {
         nom = _nom;
         adresse = _adresse;
-        telephone = _telephone;
-        loca = _loca;
+        categorie = _categorie;
+        latitude = _latitude;
+        longitude = _longitude;
     }
 
 
