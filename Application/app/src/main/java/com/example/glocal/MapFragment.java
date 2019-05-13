@@ -45,7 +45,7 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
-public class MapFragment extends SupportMapFragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class MapFragment extends SupportMapFragment implements OnMapReadyCallback {
     private boolean needsInit=false;
 
     private GoogleMap mMap;
@@ -84,7 +84,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         setLocation();
 
-        mMap.setOnMarkerClickListener(this);
 
         /*PlaceList list = new PlaceList();
         list.getPlaces(50.9580472,2.3203764);
@@ -171,7 +170,8 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
          RequestParams params = new RequestParams();
          params.put("app_id","J1QEb7Ad09VFODkddGYj");
          params.put("app_code","n6LWISWbT3Daq45oIxpEmw");
-         params.put("in",lat+","+lon+";r=20000");
+         params.put("in",lat+","+lon+";r=10000");
+         params.put("size","200");
 
          PlacesRestClient.get("places/v1/discover/explore", params, new JsonHttpResponseHandler() {
              @Override
@@ -192,7 +192,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                                     .title(nom)
                                     .snippet(category+"\n"+adresse)
                          );
-                         tmp.setTag(category);
+
 
                      }
                      mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
@@ -238,17 +238,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
          });
      }
 
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        // Retrieve the data from the marker.
-        String category = (String) marker.getTag();
 
-
-        Toast toast = Toast.makeText(getContext(), category, Toast.LENGTH_SHORT);
-        toast.show();
-
-        return false;
-    }
 
     /*
     @Override
