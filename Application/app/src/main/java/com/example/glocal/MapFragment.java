@@ -12,20 +12,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -36,16 +31,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import cz.msebera.android.httpclient.Header;
 
 public class MapFragment extends SupportMapFragment implements OnMapReadyCallback {
     private boolean needsInit=false;
@@ -56,7 +43,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     private boolean mLocationPermissionGranted;
     private static final int REQUEST_PLACE_PICKER = 1;
 
-
+    private ArrayList<com.example.glocal.Place> placesList;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -68,13 +55,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         getMapAsync(this);
 
-        // Set up the API client for Places API
-        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
-                .addApi(Places.GEO_DATA_API)
-                .build();
-        mGoogleApiClient.connect();
-
-
     }
 
     @Override
@@ -84,7 +64,97 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         // Ask permission to use location service
         getLocationPermission();
 
+        // Localise l'appareil et place la caméra sur la position
         setLocation();
+
+        // Récupération des données des points alentours depuis la TabActivity
+        buildData();
+
+        // Ajout des marqueurs sur la carte
+        addMarkers();
+
+
+    }
+
+    private void buildData() {
+        Bundle params = this.getArguments();
+        int size = params.getInt("size");
+
+        placesList = new ArrayList<>();
+
+        for (int i = 0; i < size; i++) {
+            String[] data = params.getStringArray("" + i);
+            String nom = data[0];
+            String adresse = data[1];
+            String categorie = data[2];
+            String latitude = data[4];
+            String longitude = data[5];
+            placesList.add(new com.example.glocal.Place(nom, adresse, categorie, latitude, longitude));
+        }
+    }
+
+    private void addMarkers() {
+        // Ajout des marqueurs à la carte
+        for (int i = 0; i < placesList.size(); i++) {
+            com.example.glocal.Place place = placesList.get(i);
+            BitmapDescriptor iconMarker;
+            switch (place.categorie){
+                case "Restaurant":
+                case "Snacks/Fast food":
+                case "Food & Drink":
+                    iconMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
+                    break;
+                case "Hotel":
+                case "Hôtel":
+                    iconMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE);
+                    break;
+                case "Bar/Pub":
+                case "Cofee/Tea":
+                    iconMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+                    break;
+
+                default:
+                    iconMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+                    break;
+            }
+            Marker tmp = mMap.addMarker(
+                    new MarkerOptions()
+                            .position(new LatLng(Double.parseDouble(place.latitude), Double.parseDouble(place.longitude)))
+                            .title(place.nom)
+                            .snippet(place.categorie+"\n"+place.adresse)
+                            .icon(iconMarker)
+            );
+        }
+
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+            @Override
+            public View getInfoWindow(Marker arg0) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                Context mContext = getContext();
+                LinearLayout info = new LinearLayout(mContext);
+                info.setOrientation(LinearLayout.VERTICAL);
+
+                TextView title = new TextView(mContext);
+                title.setTextColor(Color.BLACK);
+                title.setGravity(Gravity.CENTER);
+                title.setTypeface(null, Typeface.BOLD);
+                title.setText(marker.getTitle());
+
+                TextView snippet = new TextView(mContext);
+                snippet.setTextColor(Color.GRAY);
+                snippet.setText(marker.getSnippet());
+
+                info.addView(title);
+                info.addView(snippet);
+
+                return info;
+            }
+        });
     }
 
 
@@ -147,103 +217,10 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
                 // we only want to grab the location once, to allow the user to pan and zoom freely.
                 mMap.setOnMyLocationChangeListener(null);
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(ll));
-                getPlaces(location.getLatitude(),location.getLongitude());
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ll, 15));
+                //getPlaces(location.getLatitude(),location.getLongitude());
             }
         });
     }
 
-
-    public void getPlaces(double lat,double lon){
-         RequestParams params = new RequestParams();
-         params.put("app_id","J1QEb7Ad09VFODkddGYj");
-         params.put("app_code","n6LWISWbT3Daq45oIxpEmw");
-         params.put("in",lat+","+lon+";r=10000");
-         params.put("size","200");
-
-         PlacesRestClient.get("places/v1/discover/explore", params, new JsonHttpResponseHandler() {
-             @Override
-             public void onSuccess(int statusCode, Header[] headers, JSONObject data) {
-                 try {
-                     JSONArray array = data.getJSONObject("results").getJSONArray("items");
-                     for (int i = 0; i < array.length(); i++) {
-                         JSONObject elt = array.getJSONObject(i);
-                         String nom = elt.getString("title");
-                         String adresse = elt.getString("vicinity").replaceAll("<br/>"," ");
-                         String category = elt.getJSONObject("category").getString("title");
-                         String localisation = elt.getString("position").replaceAll("\\[|\\]", "");
-                         double latitude = Double.parseDouble(localisation.split(",")[0]);
-                         double longitude = Double.parseDouble(localisation.split(",")[1]);
-                         BitmapDescriptor iconMarker;
-                         switch (category){
-                             case "Restaurant":
-                             case "Snacks/Fast food":
-                             case "Food & Drink":
-                                 iconMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
-                                 break;
-                             case "Hotel":
-                             case "Hôtel":
-                                 iconMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE);
-                                 break;
-                             case "Bar/Pub":
-                             case "Cofee/Tea":
-                                 iconMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
-                                 break;
-
-                             default:
-                                 iconMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
-                                 break;
-                         }
-                         Marker tmp = mMap.addMarker(
-                                 new MarkerOptions()
-                                    .position(new LatLng(latitude, longitude))
-                                    .title(nom)
-                                    .snippet(category+"\n"+adresse)
-                                    .icon(iconMarker)
-                         );
-
-
-                     }
-                     mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-
-                         @Override
-                         public View getInfoWindow(Marker arg0) {
-                             return null;
-                         }
-
-                         @Override
-                         public View getInfoContents(Marker marker) {
-                             Context mContext = getContext();
-                             LinearLayout info = new LinearLayout(mContext);
-                             info.setOrientation(LinearLayout.VERTICAL);
-
-                             TextView title = new TextView(mContext);
-                             title.setTextColor(Color.BLACK);
-                             title.setGravity(Gravity.CENTER);
-                             title.setTypeface(null, Typeface.BOLD);
-                             title.setText(marker.getTitle());
-
-                             TextView snippet = new TextView(mContext);
-                             snippet.setTextColor(Color.GRAY);
-                             snippet.setText(marker.getSnippet());
-
-                             info.addView(title);
-                             info.addView(snippet);
-
-                             return info;
-                         }
-                     });
-
-
-
-                 } catch (JSONException e) {
-                     e.printStackTrace();
-                 }
-             }
-             @Override
-             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                 Log.d("Failure",errorResponse.toString()+" \n"+throwable.getMessage());
-             }
-         });
-     }
 }

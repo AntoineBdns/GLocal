@@ -44,7 +44,6 @@ public class TabActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tab_activity);
 
-
         mBundle = new Bundle();
         getPlaces(50.2912992,3.7853924);
     }
@@ -67,6 +66,7 @@ public class TabActivity extends FragmentActivity {
         MapFragment mapFragment = new MapFragment();
 
         listFragment.setArguments(mBundle);
+        mapFragment.setArguments(mBundle);
 
         adapter.addFragment(listFragment, "LIST");
         adapter.addFragment(mapFragment, "MAP");

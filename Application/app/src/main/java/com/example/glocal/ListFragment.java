@@ -22,8 +22,6 @@ import java.util.Arrays;
 public class ListFragment extends Fragment {
     private static final String TAG = "ListFragment";
 
-    private Button btnTest;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -39,8 +37,8 @@ public class ListFragment extends Fragment {
             String nom = data[0];
             String adresse = data[1];
             String categorie = data[2];
-            String latitude = data[3];
-            String longitude = data[4];
+            String latitude = data[4];
+            String longitude = data[5];
             placesList.add(new Place(nom, adresse, categorie, latitude, longitude));
         }
 
@@ -54,7 +52,6 @@ public class ListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View container, int position, long id) {
                 Place place = (Place) parent.getItemAtPosition(position);
-                Toast.makeText(getContext(), "Coordonnées : (" + place.latitude + ", " + place.longitude + ")", Toast.LENGTH_LONG).show();
             }
         };
         listView.setOnItemClickListener(itemClickListener);
